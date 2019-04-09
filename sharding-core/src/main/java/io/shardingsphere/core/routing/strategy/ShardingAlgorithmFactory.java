@@ -18,6 +18,7 @@
 package io.shardingsphere.core.routing.strategy;
 
 import io.shardingsphere.core.exception.ShardingException;
+import io.shardingsphere.core.routing.strategy.standard.StandardShardingAlgorithmExpression;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -28,25 +29,30 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ShardingAlgorithmFactory {
-    
-    /**
-     * Create sharding algorithm.
-     * 
-     * @param shardingAlgorithmClassName sharding algorithm class name
-     * @param superShardingAlgorithmClass sharding algorithm super class
-     * @param <T> class generic type
-     * @return sharding algorithm instance
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends ShardingAlgorithm> T newInstance(final String shardingAlgorithmClassName, final Class<T> superShardingAlgorithmClass) {
-        try {
-            Class<?> result = Class.forName(shardingAlgorithmClassName);
-            if (!superShardingAlgorithmClass.isAssignableFrom(result)) {
-                throw new ShardingException("Class %s should be implement %s", shardingAlgorithmClassName, superShardingAlgorithmClass.getName());
-            }
-            return (T) result.newInstance();
-        } catch (final ReflectiveOperationException ex) {
-            throw new ShardingException(ex);
-        }
-    }
+
+	/**
+	 * Create sharding algorithm.
+	 * 
+	 * @param shardingAlgorithmClassName  sharding algorithm class name
+	 * @param superShardingAlgorithmClass sharding algorithm super class
+	 * @param                             <T> class generic type
+	 * @param algorithmExpression         sharding algorithm config for sharding algorithm class
+	 * @return sharding algorithm instance
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends ShardingAlgorithm> T newInstance(final String shardingAlgorithmClassName, final Class<T> superShardingAlgorithmClass,
+			final String algorithmExpression) {
+		try {
+			Class<?> result = Class.forName(shardingAlgorithmClassName);
+			if (!superShardingAlgorithmClass.isAssignableFrom(result)) {
+				throw new ShardingException("Class %s should be implement %s", shardingAlgorithmClassName, superShardingAlgorithmClass.getName());
+			}
+			T ret = (T) result.newInstance();
+			StandardShardingAlgorithmExpression.putAlgorithmExpression(ret, algorithmExpression);
+			return ret;
+		} catch (final ReflectiveOperationException ex) {
+			throw new ShardingException(ex);
+		}
+	}
+
 }

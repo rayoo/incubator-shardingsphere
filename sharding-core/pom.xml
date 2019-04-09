@@ -64,4 +64,16 @@
              </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+		<snapshotRepository>
+			<id>YonyouCloud-Snapshot</id>
+			<name>YonyouCloud-Snapshot</name>
+			<url>http://maven.yonyou.com/nexus/content/repositories/YonyouCloud-Snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>YonyouCloud-Release</id>
+			<name>YonyouCloud-Release</name>
+			<url>http://maven.yonyou.com/nexus/content/repositories/YonyouCloud-Release/</url>
+		</repository>
+	</distributionManagement>
 </project>
